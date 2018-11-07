@@ -68,15 +68,15 @@ flashleds () {
 
 navi_output () {
   echo "* - execute : "$sp" : "$local_command
-  naviseccli -h $ip -user $user -password $password -scope 0 $local_command >  "$context"-$sp"-$local_command""-$time_a".log
-  chmod 444 "$context"-$sp"-$local_command""-$time_a".log
+  naviseccli -h $ip -user $user -password $password -scope 0 $local_command >  ./$context"-"$time_a/"$context"-$sp"-$local_command".log
+  chmod 444 ./$context"-"$time_a/"$context"-$sp"-$local_command".log
   if [ $cat_flag = 1 ];then 
     echo "* - cat : "$sp" : "$local_command
-    cat "$context"-$sp"-$local_command""-$time_a".log
+    cat ./$context"-"$time_a/"$context"-$sp"-$local_command".log
   fi
   if [ $grep_log_flag = 1 ];then 
     echo "* - log-grep : "$sp" : "$local_command
-    cat "$context"-$sp"-$local_command""-$time_a".log | grep -e "(2500)" -e "(67d)" -e "(78c)" -e "(78d)" -e "(6aa)" -e "(2580)" -e "all reb" -e "event un"
+    cat ./$context"-"$time_a/"$context"-$sp"-$local_command".log | grep -e "(2500)" -e "(67d)" -e "(78c)" -e "(78d)" -e "(6aa)" -e "(2580)" -e "all reb" -e "event un"
   fi
 }
 
@@ -382,6 +382,7 @@ fi
 echo -n "Would you like to start? [Y/n]"
 yesno
 
+mkdir $context"-"$time_a
 command_execute &
 pid0=$!
 if [ $sp_flag = 0 ]; then
