@@ -91,15 +91,15 @@ navi_help () {
 }
 
 set_VNXcommand () {
+  command_array=("${command_array[@]}" ="faults -list" )
   command_array=("${command_array[@]}" ="getcrus" )
   command_array=("${command_array[@]}" ="getdisk -messner -state -hs -rb -capacity -tla -rg -serial" )
+  command_array=("${command_array[@]}" ="getlog -"$log_lines )
   command_array=("${command_array[@]}" ="getlun -state -default -owner -usage" )
   command_array=("${command_array[@]}" ="getcache" )
-  command_array=("${command_array[@]}" ="getall" )
-  command_array=("${command_array[@]}" ="getlog -"$log_lines )
-  command_array=("${command_array[@]}" ="faults -list" )
   command_array=("${command_array[@]}" ="storagepool -list" )
   command_array=("${command_array[@]}" ="getrg -messner" )
+  command_array=("${command_array[@]}" ="getall" )
 }
 
 option_parsing () {
