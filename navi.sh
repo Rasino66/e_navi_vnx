@@ -2,15 +2,11 @@
 source ./set_navi.sh 2> /dev/null
 set_array () {
   command_array=()
-  grep_array=()
 }
 
 set_flag () {
   sp_flag=0
   cat_flag=0
-  grep_flag=0
-  grep_log_flag=0
-  spcollect_flag=1
 }
 
 set_def () {
@@ -74,15 +70,11 @@ navi_output () {
     echo "* - cat : "$sp" : "$local_command
     cat ./$context"-"$time_a/"$context"-$sp"-$local_command".log
   fi
-  if [ $grep_log_flag = 1 ];then 
-    echo "* - log-grep : "$sp" : "$local_command
-    cat ./$context"-"$time_a/"$context"-$sp"-$local_command".log | grep -e "(2500)" -e "(67d)" -e "(78c)" -e "(78d)" -e "(6aa)" -e "(2580)" -e "all reb" -e "event un"
-  fi
 }
 
 navi_help () {
   echo "usage: navi [-all-bf] [-all-af] [-led] [-sp AorB] "
-  echo "            [-r] [-log int] [-log-grep]"
+  echo "            [-r] [-log int] "
   echo "            [-cat] [-sleep int] [-set]"
   echo "            [-all=v2-bf] [-all=v2-af]"
   echo "            [-disk] [-crus] [-fail]"
@@ -111,15 +103,8 @@ option_parsing () {
         exit 1
       ;;
   
-      "-s"|"--setsp"|"-sp" )
-        shift 1
-        set_sp $1
-        shift 1
-        continue
-      ;;
-
       "-A" )
-        shift 1
+        #shift 1
         set_sp A
         shift 1
         continue
@@ -127,33 +112,12 @@ option_parsing () {
 
 
       "-B" )
-        shift 1
+        #shift 1
         set_sp B
         shift 1
         continue
       ;;
 
-  
-      "-c"|"--context" )
-        shift 1
-        set_context $1
-        shift 1
-        continue
-      ;;
-  
-      "-b" )
-        shift 1
-        bus=$1
-        shift 1
-        continue
-      ;;
-  
-      "-e" )
-        shift 1
-        enc=$1
-        shift 1
-        continue
-      ;;
   
       "-sleep" )
         shift 1
@@ -209,14 +173,6 @@ option_parsing () {
         continue
       ;;
 
-      "-log-grep" )
-        shift 1
-        log_lines=$1
-        command_array=("${command_array[@]}" ="getlog -"$log_lines )
-        grep_log_flag=1
-        shift 1
-        continue
-      ;;
 
       "-all"|"-all=v1" )
         set_VNXcommand 
@@ -284,12 +240,6 @@ option_parsing () {
         exit
       ;;
 
-      "-cat" )
-        cat_flag=1
-        shift 1
-        continue
-      ;;
-
       "-set" )
         echo -n "Do you want to create set_navi.sh? [Y/n]"
         yesno
@@ -351,8 +301,8 @@ init_setnavi () {
   echo "#! /bin/bash" >> set_navi.sh
   echo "shopt -s expand_aliases" >> set_navi.sh
   echo "alias naviseccli=\"NaviSECCli.exe\"" >> set_navi.sh
-  echo "user=\"sysadmin\"" >> set_navi.sh
-  echo "password=\"sysadmin\"" >> set_navi.sh
+  echo "user=\"\"" >> set_navi.sh
+  echo "password=\"\"" >> set_navi.sh
   echo "bus=\"0\"" >> set_navi.sh
   echo "enc=\"0\"" >> set_navi.sh
   echo "slot=\"0\"" >> set_navi.sh
