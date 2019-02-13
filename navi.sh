@@ -369,10 +369,10 @@ init_setnavi () {
 }
 
 if [ $# = 0 ]; then
+  echo "* - branch:func rename"
   navi_help
   exit 1
 fi
-echo "* - branch:func rename"
 set_def
 set_flag
 set_array
