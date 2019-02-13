@@ -7,6 +7,8 @@ set_array () {
 set_flag () {
   sp_flag=0
   cat_flag=0
+  led_flag=0
+  spcollect_flag=0
 }
 
 set_def () {
@@ -60,6 +62,62 @@ flashleds () {
   read -p "Please press enter to turn it off: "
   naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc off
   exit
+}
+
+spcollect () {
+  naviseccli -h $ip -user $user -password $password -scope 0 spcollect -messner
+  exit
+}
+
+spcollect-list () {
+  naviseccli -h $ip -user $user -password $password -scope 0 managefiles -list
+  exit
+}
+
+spcollect-retrieve () {
+  naviseccli -h $ip -user $user -password $password -scope 0 managefiles -retrieve 
+  exit
+}
+
+ex_command () {
+  if [ $led_flag = 1 ]; then
+      flashleds 
+      exit
+  fi
+  
+  if [ $spcollect_flag -ne 0 ]; then
+  case $spcollect_flag in
+    1 ) 
+      echo -n  "Do you want to execute \"spcollect -messner\" ? [Y/n]"
+      yesno
+      spcollect
+      if [ $sp_flag = 0 ]; then
+        chsp
+        spcollect
+      fi
+    ;;
+  
+    2 )
+      echo -n  "Do you want to execute \"managefiles -list\" ? [Y/n]"
+      yesno
+      spcollect-list
+      if [ $sp_flag = 0 ]; then
+        chsp
+        spcollect-list
+      fi
+    ;;
+  
+    3 )
+      echo -n  "Do you want to execute \"managefiles -retrieve\" ? [Y/n]"
+      yesno
+      spcollect-retrieve
+      if [ $sp_flag = 0 ]; then
+        chsp
+        spcollect-retrieve
+      fi
+    ;;
+  esac
+  fi
 }
 
 navi_output () {
@@ -159,8 +217,7 @@ option_parsing () {
       ;;
 
       "-led"|"--flashleds" )
-        sp_flag=1
-        flashleds 
+        led_flag=1
         shift 1
         continue
       ;;
@@ -220,24 +277,21 @@ option_parsing () {
       ;;
 
       "-spcollect" )
-        echo -n  "Do you want to execute \"spcollect -messner\" ? [Y/n]"
-        yesno
-        naviseccli -h $ip -user $user -password $password -scope 0 spcollect -messner
-        exit
+        spcollect_flag=1
+        shift 1
+        continue
       ;;
 
       "-spcollect-list" )
-        echo -n  "Do you want to execute \"managefiles -list\" ? [Y/n]"
-        yesno
-        naviseccli -h $ip -user $user -password $password -scope 0 managefiles -list
-        exit
+        spcollect_flag=2
+        shift 1
+        continue
       ;;
 
       "-spcollect-retrieve" )
-        echo -n  "Do you want to execute \"managefiles -retrieve\" ? [Y/n]"
-        yesno
-        naviseccli -h $ip -user $user -password $password -scope 0 managefiles -retrieve 
-        exit
+        spcollect_flag=3
+        shift 1
+        continue
       ;;
 
       "-set" )
@@ -316,11 +370,13 @@ if [ $# = 0 ]; then
   navi_help
   exit 1
 fi
+echo "-------test-------"
 set_def
 set_flag
 set_array
 option_parsing $@
 echo "user / password : "$user " / " $password
+ex_command
 echo "set_context : "$context
 command_echo 
 if [ $sp_flag = 0 ]; then
