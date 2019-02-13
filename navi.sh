@@ -120,6 +120,13 @@ ex_command () {
   fi
 }
 
+read_command () {
+  add_command=$@
+  add_command=${add_command%:*}
+  command_array=("${command_array[@]}" ="$add_command" )
+}
+
+
 navi_output () {
   echo "* - execute : "$sp" : "$local_command
   naviseccli -h $ip -user $user -password $password -scope 0 $local_command >  ./$context"-"$time_a/"$context"-$sp"-$local_command".log
@@ -294,17 +301,15 @@ option_parsing () {
         continue
       ;;
 
-      "-set" )
+      "-init" )
         echo -n "Do you want to create set_navi.sh? [Y/n]"
         yesno
         init_setnavi
       ;;
 
       "-r" |"-read" )
-        echo -n "input naviseccli_commands : "
-        read read_command
-        command_array=("${command_array[@]}" ="$read_command" )
         shift 1
+        read_command $@
         continue
       ;;
   
@@ -318,9 +323,6 @@ option_parsing () {
     esac
   done
 }
-
-
-
 
 command_echo () {
   echo "* - "$sp":"$ip" - -"
@@ -370,7 +372,7 @@ if [ $# = 0 ]; then
   navi_help
   exit 1
 fi
-echo "-------test-------"
+echo "* - branch:func rename"
 set_def
 set_flag
 set_array
