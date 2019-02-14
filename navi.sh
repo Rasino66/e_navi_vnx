@@ -66,17 +66,16 @@ flashleds () {
 
 spcollect () {
   naviseccli -h $ip -user $user -password $password -scope 0 spcollect -messner
-  exit
+  echo "* - $sp spcollect execution complete!!"
+  echo "- -"
 }
 
 spcollect-list () {
-  naviseccli -h $ip -user $user -password $password -scope 0 managefiles -list
-  exit
+  naviseccli -h $ip -user $user -password $password -scope 0 managefiles -list | grep -e _data.zip -e _runlog
 }
 
 spcollect-retrieve () {
   naviseccli -h $ip -user $user -password $password -scope 0 managefiles -retrieve 
-  exit
 }
 
 ex_command () {
@@ -87,37 +86,55 @@ ex_command () {
   fi
   
   if [ $spcollect_flag -ne 0 ]; then
-  case $spcollect_flag in
-    1 ) 
-      echo -n  "Do you want to execute \"spcollect -messner\" ? [Y/n]"
-      yesno
-      spcollect
-      if [ $sp_flag = 0 ]; then
-        chsp
+    case $spcollect_flag in
+      1 ) 
+        echo -n  "Do you want to execute \"spcollect -messner\" ? [Y/n]"
+        yesno
+        echo -n "* - "$sp":"$ip" - -"
         spcollect
-      fi
-    ;;
-  
-    2 )
-      echo -n  "Do you want to execute \"managefiles -list\" ? [Y/n]"
-      yesno
-      spcollect-list
-      if [ $sp_flag = 0 ]; then
-        chsp
+        pid0=$!
+        if [ $sp_flag = 0 ]; then
+          wait $pid0 2> /dev/null
+          chsp
+          echo "* - "$sp":"$ip" - -"
+          spcollect
+          pid1=$!
+        fi
+      ;;
+    
+      2 )
+        echo -n  "Do you want to execute \"managefiles -list\" ? [Y/n]"
+        yesno
+        echo "* - "$sp":"$ip" - -"
         spcollect-list
-      fi
-    ;;
-  
-    3 )
-      echo -n  "Do you want to execute \"managefiles -retrieve\" ? [Y/n]"
-      yesno
-      spcollect-retrieve
-      if [ $sp_flag = 0 ]; then
-        chsp
+        pid0=$!
+        if [ $sp_flag = 0 ]; then
+          wait $pid0 2> /dev/null
+          chsp
+          echo "* - "$sp":"$ip" - -"
+          spcollect-list
+          pid1=$!
+        fi
+      ;;
+    
+      3 )
+        echo -n  "Do you want to execute \"managefiles -retrieve\" ? [Y/n]"
+        yesno
+        echo "* - "$sp":"$ip" - -"
         spcollect-retrieve
-      fi
-    ;;
-  esac
+        pid0=$!
+        if [ $sp_flag = 0 ]; then
+          wait $pid0 2> /dev/null
+          chsp
+          echo "* - "$sp":"$ip" - -"
+          spcollect-retrieve
+          pid1=$!
+        fi
+      ;;
+    esac
+    wait $pid0 2> /dev/null
+    wait $pid1 2> /dev/null
+    exit
   fi
 }
 
