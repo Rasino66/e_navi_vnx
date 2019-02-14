@@ -297,7 +297,7 @@ option_parsing () {
         continue
       ;;
 
-      "-spcollect-retrieve" )
+      "-spcollect-retrieve" | "-spcollect-get" )
         spcollect_flag=3
         shift 1
         continue
