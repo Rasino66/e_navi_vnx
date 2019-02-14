@@ -139,13 +139,14 @@ navi_output () {
 }
 
 navi_help () {
-  echo "usage: navi [-all-bf] [-all-af] [-led] [-sp AorB] "
-  echo "            [-r] [-log int] "
-  echo "            [-cat] [-sleep int] [-set]"
+  echo "usage: navi [-all-bf] [-all-af] [-led] [-agent] "
+  echo "            [-r <VNX_command>:] [-log int] "
+  echo "            [-sleep int] [-init]"
   echo "            [-all=v2-bf] [-all=v2-af]"
   echo "            [-disk] [-crus] [-fail]"
   echo "            [-spcollect] [-spcollect-list]"
   echo "            [-spcollect-retrieve]"
+  echo "            if you only want one side [-A or -B]"
 }
 
 set_VNXcommand () {
@@ -192,7 +193,7 @@ option_parsing () {
         continue
       ;;
   
-      "-a" | "--getagent" )
+      "-a" | "--getagent" | "-agent" )
         cat_flag=1
         sp_flag=1
         command_array=("${command_array[@]}" ="getagent" )
