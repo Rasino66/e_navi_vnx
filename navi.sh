@@ -1,14 +1,14 @@
 #! /bin/bash
 source ./set_navi.sh 2> /dev/null
 set_array () {
-  command_array=()
+  command_array=()	# Run commands in the array comand_execute.
 }
 
 set_flag () {
-  sp_flag=0
-  cat_flag=0
-  led_flag=0
-  spcollect_flag=0
+  sp_flag=0 		# 0:Both systems 1:One system
+  cat_flag=0		# 0:Not output 1:Output the result of the commandes
+  led_flag=0            # 0:Do not execute 1:To do flash leds
+  spcollect_flag=0	# 0:Do not execute 1:To do spcollect 2:To do imanagefiles -list 3:To do managefiles -retrieve
 }
 
 set_def () {
