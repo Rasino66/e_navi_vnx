@@ -354,9 +354,13 @@ chsp () {
 }
 
 init_setnavi () {
+  if [[ -f ./set_navi.sh ]]; then
+    echo -n "The file exists but does it run? [Y/n]" 
+    yesno
+  fi
   touch set_navi.sh
   chmod 777 set_navi.sh
-  echo "#! /bin/bash" >> set_navi.sh
+  echo "#! /bin/bash" > set_navi.sh
   echo "shopt -s expand_aliases" >> set_navi.sh
   echo "alias naviseccli=\"NaviSECCli.exe\"" >> set_navi.sh
   echo "user=\"\"" >> set_navi.sh
@@ -366,9 +370,9 @@ init_setnavi () {
   echo "slot=\"0\"" >> set_navi.sh
   echo "spAip=\"128.221.1.250\"" >> set_navi.sh
   echo "spBip=\"128.221.1.251\"" >> set_navi.sh
+  echo "#model=VNX1" >> set_navi.sh
+  echo "#model=VNX2" >> set_navi.sh
   echo "Set default to set_navi.sh"
-  echo "\#set model=VNX1"
-  echo "\#set model=VNX2"
   exit
 }
 
