@@ -188,7 +188,6 @@ option_parsing () {
       ;;
   
       "-A" )
-        #shift 1
         set_sp A
         shift 1
         continue
@@ -196,7 +195,6 @@ option_parsing () {
 
 
       "-B" )
-        #shift 1
         set_sp B
         shift 1
         continue
@@ -257,47 +255,32 @@ option_parsing () {
       ;;
 
 
-      "-all"|"-all=v1" )
+      "-all" )
         set_VNXcommand 
+        if [ $model = VNX2 ]; then
+          command_array=("${command_array[@]}" ="hotsparepolicy -list" )
+        fi
         shift 1
         continue
       ;;
 
-      "-all-bf"|"-all=v1-bf" )
+      "-all-bf" )
         log_lines=10000
         set_context 0
         set_VNXcommand 
+        if [ $model = VNX2 ]; then
+          command_array=("${command_array[@]}" ="hotsparepolicy -list" )
+        fi
         shift 1
         continue
       ;;
 
-      "-all-af"|"-all=v1-af" )
+      "-all-af" )
         set_context 1
         set_VNXcommand 
-        shift 1
-        continue
-      ;;
-
-      "-all=v2" )
-        set_VNXcommand 
-        command_array=("${command_array[@]}" ="hotsparepolicy -list" )
-        shift 1
-        continue
-      ;;
-
-      "-all=v2-bf" )
-        log_lines=10000
-        set_VNXcommand 
-        set_context 0
-        command_array=("${command_array[@]}" ="hotsparepolicy -list" )
-        shift 1
-        continue
-      ;;
-
-      "-all=v2-af" )
-        set_VNXcommand 
-        set_context 1
-        command_array=("${command_array[@]}" ="hotsparepolicy -list" )
+        if [ $model = VNX2 ]; then
+          command_array=("${command_array[@]}" ="hotsparepolicy -list" )
+        fi
         shift 1
         continue
       ;;
@@ -384,6 +367,8 @@ init_setnavi () {
   echo "spAip=\"128.221.1.250\"" >> set_navi.sh
   echo "spBip=\"128.221.1.251\"" >> set_navi.sh
   echo "Set default to set_navi.sh"
+  echo "\#set model=VNX1"
+  echo "\#set model=VNX2"
   exit
 }
 
