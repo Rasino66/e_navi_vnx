@@ -81,8 +81,9 @@ spcollect-retrieve () {
 
 ex_command () {
   if [ $led_flag = 1 ]; then
-      flashleds 
-      exit
+    echo "* - "$sp":"$ip" - -"
+    flashleds 
+    exit
   fi
   
   if [ $spcollect_flag -ne 0 ]; then
