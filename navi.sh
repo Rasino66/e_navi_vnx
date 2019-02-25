@@ -7,7 +7,7 @@ set_array () {
 set_flag () {
   sp_flag=0 		# 0:Both systems 1:One system
   cat_flag=0		# 0:Not output 1:Output the result of the commandes
-  led_flag=0            # 0:Do not execute 1:To do flash leds
+  led_flag=0            # 0:Do not execute 1:To do flash leds 2:To do flash leds off
   spcollect_flag=0	# 0:Do not execute 1:To do spcollect 2:To do managefiles -list 3:To do managefiles -retrieve
   yes_flag=0		# 0:Ask whether to execute 1:No question
 }
@@ -58,12 +58,24 @@ set_context () {
 }
 
 flashleds () {
-  echo  -n "flashleds:Bus#"$bus "enc#"$enc "[Y/n]"
-  yesno
-  naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc on
-  read -p "Please press enter to turn it off: "
-  naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc off
-  exit
+  case $led_flag in
+    1 )
+      echo  -n "flashleds:Bus#"$bus "enc#"$enc "[Y/n]"
+      yesno
+      naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc on
+      read -p "Please press enter to turn it off: "
+      naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc off
+      exit
+    ;;
+
+    2 )
+      echo  -n "flashleds:Bus#"$bus "enc#"$enc ". Please press enter to turn it off:"
+      yesno
+      naviseccli -h $ip -user $user -password $password -scope 0 flashleds -b $bus -e $enc off
+      exit
+    ;;
+
+  esac
 }
 
 spcollect () {
@@ -81,7 +93,7 @@ spcollect-retrieve () {
 }
 
 ex_command () {
-  if [ $led_flag = 1 ]; then
+  if [ $led_flag != 0 ]; then
     echo "* - "$sp":"$ip" - -"
     flashleds 
     exit
@@ -247,12 +259,18 @@ option_parsing () {
         continue
       ;;
 
+      "-led-off" | "--flashleds-off" )
+        led_flag=2
+        shift 1
+        continue
+      ;;
+
       "-led" | "--flashleds" )
         led_flag=1
         shift 1
         continue
       ;;
-  
+
       "-getlog" | "-log"|"--getlog" )
         shift 1
         log_lines=$1
