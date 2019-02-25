@@ -8,7 +8,8 @@ set_flag () {
   sp_flag=0 		# 0:Both systems 1:One system
   cat_flag=0		# 0:Not output 1:Output the result of the commandes
   led_flag=0            # 0:Do not execute 1:To do flash leds
-  spcollect_flag=0	# 0:Do not execute 1:To do spcollect 2:To do imanagefiles -list 3:To do managefiles -retrieve
+  spcollect_flag=0	# 0:Do not execute 1:To do spcollect 2:To do managefiles -list 3:To do managefiles -retrieve
+  yes_flag=0		# 0:Ask whether to execute 1:No question
 }
 
 set_def () {
@@ -24,14 +25,15 @@ set_def () {
 }
 
 yesno () {
-  # echo -n "Would you like to start? [Y/n]"
-  read ANSWER
-  case $ANSWER in     
-    "" | "Y" | "y" | "yes" | "Yes" | "YES" )
-        echo "* - start now..";;
-    * ) echo "exit"
-        exit;; 
-  esac
+  if [ $yes_flag = 0 ]; then
+    read ANSWER
+    case $ANSWER in     
+      "" | "Y" | "y" | "yes" | "Yes" | "YES" )
+          echo "* - start now..";;
+      * ) echo "exit"
+          exit;; 
+    esac
+  fi
 }
 
 set_sp () {
@@ -182,7 +184,7 @@ option_parsing () {
   while :
   do
     case $1 in
-      "-h"|"--help" )
+      "-h" | "--help" )
         navi_help
         exit 1
       ;;
@@ -200,6 +202,11 @@ option_parsing () {
         continue
       ;;
 
+      "-Y" | "-y" )
+        yes_flag=1
+        shift 1
+        continue
+      ;;
   
       "-sleep" )
         shift 1
@@ -216,7 +223,7 @@ option_parsing () {
         continue
       ;;
   
-      "-crus"|"--getcrus" )
+      "-crus" | "--getcrus" )
         command_array=("${command_array[@]}" ="getcrus" )
         shift 1
         continue
@@ -228,25 +235,25 @@ option_parsing () {
         continue
       ;;
   
-      "-disk"|"--getdisk" )
+      "-disk" | "--getdisk" )
         command_array=("${command_array[@]}" ="getdisk -messner -state -hs -rb -capacity -tla -rg -serial" )
         shift 1
         continue
       ;;
 
-      "-fail"|"--faults" )
+      "-fail" | "--faults" )
         command_array=("${command_array[@]}" ="faults -list" )
         shift 1
         continue
       ;;
 
-      "-led"|"--flashleds" )
+      "-led" | "--flashleds" )
         led_flag=1
         shift 1
         continue
       ;;
   
-      "-getlog"|"-log"|"--getlog" )
+      "-getlog" | "-log"|"--getlog" )
         shift 1
         log_lines=$1
         command_array=("${command_array[@]}" ="getlog -"$log_lines )
@@ -384,18 +391,19 @@ set_def
 set_flag
 set_array
 option_parsing $@
-echo "user / password : "$user " / " $password
-ex_command
-echo "set_context : "$context
-command_echo 
-if [ $sp_flag = 0 ]; then
-  chsp
-  command_echo
-  chsp
+if [ $yes_flag = 0 ]; then
+  echo "user / password : "$user " / " $password
+  ex_command
+  echo "set_context : "$context
+  command_echo 
+  if [ $sp_flag = 0 ]; then
+    chsp
+    command_echo
+    chsp
+  fi
+  echo -n "Would you like to start? [Y/n]"
+  yesno
 fi
-
-echo -n "Would you like to start? [Y/n]"
-yesno
 
 mkdir $context"-"$time_a
 command_execute &
