@@ -388,8 +388,8 @@ init_setnavi () {
   echo "#! /bin/bash" > set_navi.sh
   echo "shopt -s expand_aliases" >> set_navi.sh
   echo "alias naviseccli=\"NaviSECCli.exe\"" >> set_navi.sh
-  echo "user=\"\"" >> set_navi.sh
-  echo "password=\"\"" >> set_navi.sh
+  echo "user=\"sysadmin\"" >> set_navi.sh
+  echo "password=\"sysadmin\"" >> set_navi.sh
   echo "bus=\"0\"" >> set_navi.sh
   echo "enc=\"0\"" >> set_navi.sh
   echo "slot=\"0\"" >> set_navi.sh
