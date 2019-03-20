@@ -1,4 +1,5 @@
 #! /bin/bash
+# LTS
 source ./set_navi.sh 2> /dev/null
 set_array () {
   command_array=()	# Run commands in the array comand_execute.
